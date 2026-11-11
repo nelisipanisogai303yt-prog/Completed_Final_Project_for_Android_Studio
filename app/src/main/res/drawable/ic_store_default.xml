@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Store Roof / Awning -->
+    <path
+        android:fillColor="#FACC15"
+        android:pathData="M2,4l2,-2h16l2,2v3h-20v-3z" />
+    <path
+        android:fillColor="#EAB308"
+        android:pathData="M2,7h4v2h-4z M6,7h4v2h-4z M10,7h4v2h-4z M14,7h4v2h-4z M18,7h4v2h-4z" />
+    <!-- Store Base -->
+    <path
+        android:fillColor="#111827"
+        android:pathData="M4,9h16v11h-16z" />
+    <!-- Door -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,14h4v6h-4z" />
+</vector>

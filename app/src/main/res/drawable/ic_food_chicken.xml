@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Chicken Drumstick Meat -->
+    <path
+        android:fillColor="#EAB308"
+        android:pathData="M16.5,3c-3.04,0 -5.5,2.46 -5.5,5.5c0,1.38 0.51,2.65 1.35,3.62L5.88,18.59c-0.78,0.78 -0.78,2.05 0,2.83s2.05,0.78 2.83,0l6.47,-6.47c0.97,0.84 2.24,1.35 3.62,1.35c3.04,0 5.5,-2.46 5.5,-5.5C24.3,5.46 19.54,3 16.5,3z" />
+    <!-- Bone tip -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M3.5,19c-0.83,0 -1.5,0.67 -1.5,1.5S2.67,22 3.5,22s1.5,-0.67 1.5,-1.5S4.33,19 3.5,19z" />
+</vector>

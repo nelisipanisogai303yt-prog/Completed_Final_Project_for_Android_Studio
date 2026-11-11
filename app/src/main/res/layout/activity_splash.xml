@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray">
+
+    <!-- Moving Floating Food Icons Background Layer -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivFloatFood1"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="60dp"
+            android:alpha="0.25"
+            android:contentDescription="@string/cat_burgers"
+            android:src="@drawable/ic_food_burger" />
+
+        <ImageView
+            android:id="@+id/ivFloatFood2"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="36dp"
+            android:alpha="0.25"
+            android:contentDescription="@string/cat_pizza"
+            android:src="@drawable/ic_food_pizza" />
+
+        <ImageView
+            android:id="@+id/ivFloatFood3"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="120dp"
+            android:alpha="0.25"
+            android:contentDescription="@string/cat_milk_tea"
+            android:src="@drawable/ic_food_drink" />
+
+        <ImageView
+            android:id="@+id/ivFloatFood4"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="80dp"
+            android:alpha="0.25"
+            android:contentDescription="@string/cat_snacks"
+            android:src="@drawable/ic_food_snack" />
+
+    </FrameLayout>
+
+    <!-- Centered Logo & Branding Intro -->
+    <LinearLayout
+        android:id="@+id/llSplashBranding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivSplashLogo"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_bitedash_logo" />
+
+        <TextView
+            android:id="@+id/tvSplashAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/app_name"
+            android:textColor="@color/text_dark"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSplashTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/tagline"
+            android:textColor="@color/text_muted"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

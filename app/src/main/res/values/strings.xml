@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">BiteDash</string>
+    <string name="tagline">Fast &amp; Fresh Food Delivery</string>
+
+    <!-- Authentication -->
+    <string name="sign_in">Sign In</string>
+    <string name="access_account">Access your BiteDash account</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="enter_username">Enter your username</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="register_link">Don\'t have an account? Register Here</string>
+
+    <string name="join_bitedash">Join BiteDash</string>
+    <string name="create_account_subtitle">Create an account to get started</string>
+    <string name="choose_username">Choose a username</string>
+    <string name="choose_password">Choose a password</string>
+    <string name="select_account_role">Select Account Role:</string>
+    <string name="role_customer">Customer (Order Food)</string>
+    <string name="role_owner">Store Owner (Manage Shop)</string>
+    <string name="create_account_button">CREATE ACCOUNT</string>
+    <string name="login_link">Already have an account? Sign In</string>
+
+    <!-- Customer Dashboard -->
+    <string name="welcome_customer">Welcome, Customer!</string>
+    <string name="eat_today_subtitle">What do you want to eat today?</string>
+    <string name="my_account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="hot_promos_badge">HOT DAILY PROMOS</string>
+    <string name="promo_title">50% OFF Chicken &amp; Burger Combos Today!</string>
+    <string name="promo_desc">Use voucher code BITEDASH50 for ₱50 discount on all orders.</string>
+    <string name="search_hint">Search meals, chicken, coffee, milk tea...</string>
+
+    <!-- Categories -->
+    <string name="cat_all">All</string>
+    <string name="cat_chicken">Chicken</string>
+    <string name="cat_coffee">Coffee</string>
+    <string name="cat_milk_tea">Milk Tea</string>
+    <string name="cat_snacks">Snacks</string>
+    <string name="cat_rice">Rice Meals</string>
+    <string name="cat_burgers">Burgers</string>
+    <string name="cat_pizza">Pizza</string>
+    <string name="cat_combos">Combos</string>
+
+    <!-- Sorting & Order Customization -->
+    <string name="sort_by_label">Sort By:</string>
+    <string name="sort_rating">Rating</string>
+    <string name="sort_price_low">Price Low</string>
+    <string name="sort_fastest">Fastest</string>
+
+    <string name="active_orders_heading">My Active Orders &amp; History</string>
+    <string name="available_meals_heading">Available Meals</string>
+    <string name="select_meal_customize">Select a Meal to Customize</string>
+    <string name="select_extra_addons">Select Extra Add-Ons:</string>
+    <string name="addon_sauce">Extra Gourmet Sauce (+₱25.00)</string>
+    <string name="addon_tea">Large Iced Tea (+₱40.00)</string>
+    <string name="addon_cutlery">Eco-Friendly Cutlery (Free)</string>
+    <string name="addon_delivery">Express Priority Delivery (+₱50.00)</string>
+
+    <string name="apply_voucher_heading">Apply Voucher Discount:</string>
+    <string name="voucher_none">No Voucher</string>
+    <string name="voucher_50">BITEDASH50 (₱50 OFF Total)</string>
+    <string name="voucher_freedel">FREEDEL (Free Delivery - Save ₱29)</string>
+
+    <string name="kitchen_suggestions_heading">Suggestions / Kitchen Instructions:</string>
+    <string name="kitchen_hint">e.g. Less ice, no onions, extra spicy...</string>
+    <string name="payment_method_heading">Payment Method:</string>
+    <string name="payment_cod">Cash on Delivery (COD)</string>
+    <string name="payment_ewallet">E-Wallet / GCash / BitePay</string>
+    <string name="total_amount_label">Total Amount:</string>
+    <string name="place_order_button">PLACE ORDER NOW</string>
+
+    <!-- Store Owner Dashboard -->
+    <string name="welcome_partner">Welcome, Partner!</string>
+    <string name="owner_dashboard_subtitle">Store Owner Dashboard</string>
+    <string name="store_name_default">BiteDash Express Kitchen</string>
+    <string name="store_open_badge">STORE OPEN</string>
+    <string name="store_status_desc">Status: Active &amp; Accepting Customer Orders</string>
+    <string name="total_orders_label">Total Orders</string>
+    <string name="total_sales_label">Total Sales</string>
+    <string name="add_new_meal_heading">Add New Meal to Menu</string>
+    <string name="meal_name_label">Meal / Item Name</string>
+    <string name="meal_name_hint">e.g. Bacon Cheeseburger</string>
+    <string name="description_label">Description</string>
+    <string name="description_hint">e.g. Crispy bacon, beef patty &amp; sauce</string>
+    <string name="price_php_label">Price in PHP (₱)</string>
+    <string name="price_php_hint">e.g. 199.00</string>
+    <string name="category_label">Category:</string>
+    <string name="add_meal_button">+ ADD MEAL TO MENU</string>
+    <string name="customer_orders_heading">Customer Orders</string>
+
+    <!-- Account & Profile -->
+    <string name="back_button">Back</string>
+    <string name="my_profile_title">My Profile &amp; Settings</string>
+    <string name="customer_account_badge">Customer Account</string>
+    <string name="delivery_address_heading">Delivery Address &amp; Maps Location</string>
+    <string name="saved_preset_label">Select Saved Location Preset:</string>
+    <string name="preset_uni">123 University Belt, Sampaloc, Manila (Campus)</string>
+    <string name="preset_home">Home: 456 España Blvd, Manila</string>
+    <string name="preset_office">Office: 789 Makati Ave, Makati City</string>
+    <string name="custom_address_label">Or Type Custom Delivery Address:</string>
+    <string name="custom_address_hint">Type your full delivery address...</string>
+    <string name="save_address_button">Save Address</string>
+    <string name="google_maps_button">Google Maps Location</string>
+    <string name="wallet_heading">BitePay Wallet Balance</string>
+    <string name="topup_button">+ ₱500 Top Up</string>
+    <string name="frequent_meals_heading">Favorite &amp; Frequent Meals</string>
+    <string name="frequent_meals_list">• 2pc Crispy Fried Chicken Meal (Krusty Chicken)\n• Iced Caramel Macchiato 16oz (Daily Roast)\n• Wintermelon Milk Tea (Boba House)</string>
+    <string name="account_preferences_heading">Account Preferences</string>
+    <string name="pref_push">Enable Delivery Order Push Notifications</string>
+    <string name="pref_sms">Receive SMS Promo &amp; Voucher Alerts</string>
+    <string name="help_centre_heading">Help Centre: How BiteDash Works</string>
+    <string name="help_centre_text">1. Browse &amp; Search: Filter by category (Chicken, Coffee, Milk Tea, Snacks, Rice Meals) or search for your favorite meal.\n\n2. Customize Order: Select extra sauce, iced tea, express delivery, discount vouchers, and kitchen instructions.\n\n3. Flexible Payment: Pay using Cash on Delivery (COD) or BitePay E-Wallet.\n\n4. Merchant Order Tracking: Store owners receive and process your orders instantly.</string>
+    <string name="logout_account_button">Logout Account</string>
+</resources>

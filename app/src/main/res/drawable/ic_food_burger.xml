@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Top Bun -->
+    <path
+        android:fillColor="#FACC15"
+        android:pathData="M12,3c-4.97,0 -9,3.13 -9,7h18c0,-3.87 -4.03,-7 -9,-7z" />
+    <!-- Sesame seeds -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,6h1.5v1h-1.5z M14,6h1.5v1h-1.5z M11,8h1.5v1h-1.5z" />
+    <!-- Cheese & Lettuce -->
+    <path
+        android:fillColor="#16A34A"
+        android:pathData="M3,11h18v2h-18z" />
+    <!-- Patty -->
+    <path
+        android:fillColor="#78350F"
+        android:pathData="M3,14h18c0,1.1 -0.9,2 -2,2h-14c-1.1,0 -2,-0.9 -2,-2z" />
+    <!-- Bottom Bun -->
+    <path
+        android:fillColor="#EAB308"
+        android:pathData="M4,17h16v2c0,1.1 -0.9,2 -2,2h-12c-1.1,0 -2,-0.9 -2,-2v-2z" />
+</vector>
