@@ -17,8 +17,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="30dp"
             android:alpha="0.22"
-            android:contentDescription="@string/cat_burgers"
-            android:src="@drawable/ic_food_burger" />
+            android:contentDescription="@string/cat_fast_foods"
+            android:src="@drawable/ic_food_fast_food" />
 
         <ImageView
             android:id="@+id/ivFloatFood2"
@@ -27,8 +27,8 @@
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="90dp"
             android:alpha="0.22"
-            android:contentDescription="@string/cat_pizza"
-            android:src="@drawable/ic_food_pizza" />
+            android:contentDescription="@string/cat_rice_meals"
+            android:src="@drawable/ic_food_rice_meals" />
 
         <ImageView
             android:id="@+id/ivFloatFood3"
@@ -38,8 +38,8 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="40dp"
             android:alpha="0.22"
-            android:contentDescription="@string/cat_milk_tea"
-            android:src="@drawable/ic_food_drink" />
+            android:contentDescription="@string/cat_beverage"
+            android:src="@drawable/ic_food_beverage" />
 
         <ImageView
             android:id="@+id/ivFloatFood4"
@@ -60,8 +60,8 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="50dp"
             android:alpha="0.22"
-            android:contentDescription="@string/cat_chicken"
-            android:src="@drawable/ic_food_chicken" />
+            android:contentDescription="@string/cat_fast_foods"
+            android:src="@drawable/ic_food_fast_food" />
 
         <ImageView
             android:id="@+id/ivFloatFood6"
@@ -71,8 +71,8 @@
             android:layout_marginStart="48dp"
             android:layout_marginBottom="180dp"
             android:alpha="0.22"
-            android:contentDescription="@string/cat_coffee"
-            android:src="@drawable/ic_food_coffee" />
+            android:contentDescription="@string/cat_beverage"
+            android:src="@drawable/ic_food_beverage" />
 
         <ImageView
             android:id="@+id/ivFloatFood7"
@@ -93,7 +93,7 @@
             android:layout_marginBottom="130dp"
             android:alpha="0.22"
             android:contentDescription="@string/cat_combos"
-            android:src="@drawable/ic_food_combo" />
+            android:src="@drawable/ic_food_fast_food" />
 
     </FrameLayout>
 
@@ -185,7 +185,7 @@
 
             </LinearLayout>
 
-            <!-- Selected Meal Card & Custom Quantity Selector with Plus/Minus Signs -->
+            <!-- Selected Cart Items Container -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -195,107 +195,20 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Cart Order Items"
+                    android:textColor="@color/text_dark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <LinearLayout
+                    android:id="@+id/llCheckoutCartContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/ivCheckoutFoodImg"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:contentDescription="@string/app_name"
-                        android:src="@drawable/ic_food_burger" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvCheckoutMealName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cheeseburger Deluxe Meal"
-                            android:textColor="@color/text_dark"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvCheckoutStoreName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="BiteDash Express Kitchen"
-                            android:textColor="@color/text_muted"
-                            android:textSize="13sp" />
-
-                        <TextView
-                            android:id="@+id/tvCheckoutBasePrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="₱149.00"
-                            android:textColor="@color/text_dark"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="16dp"
-                    android:background="@color/card_stroke" />
-
-                <!-- Quantity Controls with Visible Minus & Plus Signs -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Select Quantity:"
-                        android:textColor="@color/text_dark"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnQtyMinus"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_qty_button_minus"
-                        android:text="−"
-                        android:textColor="#111827"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvQtyCount"
-                        android:layout_width="44dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textColor="@color/text_dark"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnQtyPlus"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_yellow_button"
-                        android:text="+"
-                        android:textColor="#111827"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical" />
 
             </LinearLayout>
 
@@ -525,7 +438,32 @@
                         android:id="@+id/tvSubtotalPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₱149.00"
+                        android:text="₱0.00"
+                        android:textColor="@color/text_dark"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Extra Add-ons Line -->
+                <LinearLayout
+                    android:id="@+id/lineAddOns"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Extra Add-ons"
+                        android:textColor="@color/text_muted"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAddOnsPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₱0.00"
                         android:textColor="@color/text_dark"
                         android:textSize="14sp" />
                 </LinearLayout>

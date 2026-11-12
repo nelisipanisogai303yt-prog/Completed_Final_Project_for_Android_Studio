@@ -4,12 +4,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "BiteDash.db"
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 8
 
         private const val TABLE_USERS = "users"
         private const val COLUMN_USER_ID = "id"
@@ -18,6 +21,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_ROLE = "role"
         private const val COLUMN_ADDRESS = "address"
         private const val COLUMN_WALLET = "wallet_balance"
+        private const val COLUMN_USER_LAST_ACTIVE = "last_active"
 
         private const val TABLE_STORES = "stores"
         private const val COLUMN_STORE_ID = "store_id"
@@ -39,6 +43,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_ITEM_IMAGE = "image_type"
         private const val COLUMN_ITEM_RATING = "rating"
         private const val COLUMN_ITEM_PREP = "prep_time_mins"
+        private const val COLUMN_ITEM_AVAILABLE = "is_available"
 
         private const val TABLE_ORDERS = "orders"
         private const val COLUMN_ORDER_ID = "order_id"
@@ -60,7 +65,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_PASSWORD TEXT, "
                 + "$COLUMN_ROLE TEXT, "
                 + "$COLUMN_ADDRESS TEXT, "
-                + "$COLUMN_WALLET REAL)")
+                + "$COLUMN_WALLET REAL, "
+                + "$COLUMN_USER_LAST_ACTIVE TEXT)")
 
         val createStoresTable = ("CREATE TABLE $TABLE_STORES ("
                 + "$COLUMN_STORE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -81,7 +87,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 + "$COLUMN_MENU_CATEGORY TEXT, "
                 + "$COLUMN_ITEM_IMAGE TEXT, "
                 + "$COLUMN_ITEM_RATING REAL, "
-                + "$COLUMN_ITEM_PREP INTEGER)")
+                + "$COLUMN_ITEM_PREP INTEGER, "
+                + "$COLUMN_ITEM_AVAILABLE INTEGER DEFAULT 1)")
 
         val createOrdersTable = ("CREATE TABLE $TABLE_ORDERS ("
                 + "$COLUMN_ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -111,13 +118,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
+    private fun getCurrentFormattedTime(): String {
+        return SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date())
+    }
+
     private fun seedInitialData(db: SQLiteDatabase) {
+        val nowStr = getCurrentFormattedTime()
         val defaultCustomer = ContentValues().apply {
             put(COLUMN_USERNAME, "customer")
             put(COLUMN_PASSWORD, "password123")
             put(COLUMN_ROLE, "Customer")
             put(COLUMN_ADDRESS, "123 University Belt, Sampaloc, Manila")
             put(COLUMN_WALLET, 1500.00)
+            put(COLUMN_USER_LAST_ACTIVE, nowStr)
         }
         val defaultOwner = ContentValues().apply {
             put(COLUMN_USERNAME, "owner")
@@ -125,6 +138,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_ROLE, "Store Owner")
             put(COLUMN_ADDRESS, "BiteDash Express Kitchen HQ, Manila")
             put(COLUMN_WALLET, 5000.00)
+            put(COLUMN_USER_LAST_ACTIVE, nowStr)
         }
         db.insertWithOnConflict(TABLE_USERS, null, defaultCustomer, SQLiteDatabase.CONFLICT_IGNORE)
         db.insertWithOnConflict(TABLE_USERS, null, defaultOwner, SQLiteDatabase.CONFLICT_IGNORE)
@@ -201,104 +215,48 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         val menuItems = listOf(
             ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Krusty Crispy Chicken")
-                put(COLUMN_ITEM_NAME, "2pc Crispy Fried Chicken Meal")
-                put(COLUMN_DESCRIPTION, "Golden crunchy fried chicken served with hot rice & gravy.")
-                put(COLUMN_PRICE, 179.00)
-                put(COLUMN_MENU_CATEGORY, "Chicken")
-                put(COLUMN_ITEM_IMAGE, "chicken")
+                put(COLUMN_MENU_STORE, "BiteDash Express Kitchen")
+                put(COLUMN_ITEM_NAME, "Crispy Nacho & Nuggets Basket")
+                put(COLUMN_DESCRIPTION, "Loaded cheese nachos with crunchy nuggets & dip.")
+                put(COLUMN_PRICE, 189.00)
+                put(COLUMN_MENU_CATEGORY, "Fast Foods")
+                put(COLUMN_ITEM_IMAGE, "fastfood")
                 put(COLUMN_ITEM_RATING, 4.9)
-                put(COLUMN_ITEM_PREP, 15)
+                put(COLUMN_ITEM_PREP, 12)
+                put(COLUMN_ITEM_AVAILABLE, 1)
             },
             ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Krusty Crispy Chicken")
-                put(COLUMN_ITEM_NAME, "Buffalo Chicken Wings 6pcs")
-                put(COLUMN_DESCRIPTION, "Spicy glazed buffalo wings served with ranch dip & fries.")
-                put(COLUMN_PRICE, 229.00)
-                put(COLUMN_MENU_CATEGORY, "Chicken")
-                put(COLUMN_ITEM_IMAGE, "chicken")
-                put(COLUMN_ITEM_RATING, 4.8)
-                put(COLUMN_ITEM_PREP, 18)
+                put(COLUMN_MENU_STORE, "Sizzling Rice Bowls")
+                put(COLUMN_ITEM_NAME, "Sizzling Pork Sisig Rice Meal")
+                put(COLUMN_DESCRIPTION, "Crispy chopped pork sisig with sunny side fried egg & rice.")
+                put(COLUMN_PRICE, 179.00)
+                put(COLUMN_MENU_CATEGORY, "Rice Meals")
+                put(COLUMN_ITEM_IMAGE, "ricemeal")
+                put(COLUMN_ITEM_RATING, 4.9)
+                put(COLUMN_ITEM_PREP, 15)
+                put(COLUMN_ITEM_AVAILABLE, 1)
             },
             ContentValues().apply {
                 put(COLUMN_MENU_STORE, "Daily Roast Coffee Cafe")
                 put(COLUMN_ITEM_NAME, "Iced Caramel Macchiato 16oz")
-                put(COLUMN_DESCRIPTION, "Fresh espresso brewed with velvety milk & rich caramel drizzle.")
+                put(COLUMN_DESCRIPTION, "Fresh espresso with rich milk & caramel drizzle.")
                 put(COLUMN_PRICE, 135.00)
-                put(COLUMN_MENU_CATEGORY, "Coffee")
-                put(COLUMN_ITEM_IMAGE, "coffee")
+                put(COLUMN_MENU_CATEGORY, "Beverage")
+                put(COLUMN_ITEM_IMAGE, "beverage")
                 put(COLUMN_ITEM_RATING, 4.9)
                 put(COLUMN_ITEM_PREP, 8)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Daily Roast Coffee Cafe")
-                put(COLUMN_ITEM_NAME, "Spanish Latte Cream 16oz")
-                put(COLUMN_DESCRIPTION, "Rich espresso with condensed milk and creamy foam.")
-                put(COLUMN_PRICE, 140.00)
-                put(COLUMN_MENU_CATEGORY, "Coffee")
-                put(COLUMN_ITEM_IMAGE, "coffee")
-                put(COLUMN_ITEM_RATING, 4.8)
-                put(COLUMN_ITEM_PREP, 8)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Boba & Tea House")
-                put(COLUMN_ITEM_NAME, "Wintermelon Milk Tea")
-                put(COLUMN_DESCRIPTION, "Rich milk tea brewed with wintermelon syrup & chewy boba pearls.")
-                put(COLUMN_PRICE, 110.00)
-                put(COLUMN_MENU_CATEGORY, "Drinks")
-                put(COLUMN_ITEM_IMAGE, "drink")
-                put(COLUMN_ITEM_RATING, 4.9)
-                put(COLUMN_ITEM_PREP, 8)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Boba & Tea House")
-                put(COLUMN_ITEM_NAME, "Taro Cream Cheese Milk Tea")
-                put(COLUMN_DESCRIPTION, "Creamy taro flavor topped with salted cream cheese cap.")
-                put(COLUMN_PRICE, 125.00)
-                put(COLUMN_MENU_CATEGORY, "Drinks")
-                put(COLUMN_ITEM_IMAGE, "drink")
-                put(COLUMN_ITEM_RATING, 4.8)
-                put(COLUMN_ITEM_PREP, 8)
+                put(COLUMN_ITEM_AVAILABLE, 1)
             },
             ContentValues().apply {
                 put(COLUMN_MENU_STORE, "Snack Attack PH")
                 put(COLUMN_ITEM_NAME, "Overloaded Cheese Fries & Nachos")
-                put(COLUMN_DESCRIPTION, "Crispy fries & tortilla chips drizzled with melted cheese & bacon bits.")
+                put(COLUMN_DESCRIPTION, "Crispy fries & tortilla chips drizzled with melted cheese.")
                 put(COLUMN_PRICE, 120.00)
                 put(COLUMN_MENU_CATEGORY, "Snacks")
                 put(COLUMN_ITEM_IMAGE, "snack")
                 put(COLUMN_ITEM_RATING, 4.8)
                 put(COLUMN_ITEM_PREP, 10)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Sizzling Rice Bowls")
-                put(COLUMN_ITEM_NAME, "Sizzling Pork Sisig Rice Meal")
-                put(COLUMN_DESCRIPTION, "Crispy chopped pork sisig served on a hot plate with fried egg & rice.")
-                put(COLUMN_PRICE, 179.00)
-                put(COLUMN_MENU_CATEGORY, "Rice Meals")
-                put(COLUMN_ITEM_IMAGE, "combo")
-                put(COLUMN_ITEM_RATING, 4.9)
-                put(COLUMN_ITEM_PREP, 15)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "BiteDash Express Kitchen")
-                put(COLUMN_ITEM_NAME, "Double Bacon Stack Burger")
-                put(COLUMN_DESCRIPTION, "Double beef patties, crispy bacon strips, smoked cheese & special sauce.")
-                put(COLUMN_PRICE, 219.00)
-                put(COLUMN_MENU_CATEGORY, "Burgers")
-                put(COLUMN_ITEM_IMAGE, "burger")
-                put(COLUMN_ITEM_RATING, 4.9)
-                put(COLUMN_ITEM_PREP, 15)
-            },
-            ContentValues().apply {
-                put(COLUMN_MENU_STORE, "Pizza Kingdom PH")
-                put(COLUMN_ITEM_NAME, "Super Pepperoni Feast Pizza")
-                put(COLUMN_DESCRIPTION, "Loaded with mozzarella cheese and double pepperoni slices.")
-                put(COLUMN_PRICE, 349.00)
-                put(COLUMN_MENU_CATEGORY, "Pizza")
-                put(COLUMN_ITEM_IMAGE, "pizza")
-                put(COLUMN_ITEM_RATING, 4.9)
-                put(COLUMN_ITEM_PREP, 25)
+                put(COLUMN_ITEM_AVAILABLE, 1)
             }
         )
 
@@ -315,6 +273,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_ROLE, role)
             put(COLUMN_ADDRESS, "123 University Belt, Sampaloc, Manila")
             put(COLUMN_WALLET, 1000.00)
+            put(COLUMN_USER_LAST_ACTIVE, getCurrentFormattedTime())
         }
         val result = db.insert(TABLE_USERS, null, values)
         db.close()
@@ -405,11 +364,51 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val roleIndex = cursor.getColumnIndex(COLUMN_ROLE)
             if (roleIndex != -1) {
                 role = cursor.getString(roleIndex)
+
+                // Update last active time upon successful login
+                val timeValues = ContentValues().apply {
+                    put(COLUMN_USER_LAST_ACTIVE, getCurrentFormattedTime())
+                }
+                db.update(TABLE_USERS, timeValues, "LOWER($COLUMN_USERNAME) = LOWER(?)", arrayOf(username.trim()))
             }
         }
         cursor.close()
         db.close()
         return role
+    }
+
+    fun getAllUserAccounts(): List<UserAccountInfo> {
+        val list = mutableListOf<UserAccountInfo>()
+        val db = this.readableDatabase
+        val cursor = db.query(
+            TABLE_USERS,
+            arrayOf(COLUMN_USERNAME, COLUMN_ROLE, COLUMN_ADDRESS, COLUMN_WALLET, COLUMN_USER_LAST_ACTIVE),
+            null, null, null, null,
+            "$COLUMN_USER_ID DESC"
+        )
+
+        if (cursor.moveToFirst()) {
+            val unameIdx = cursor.getColumnIndex(COLUMN_USERNAME)
+            val roleIdx = cursor.getColumnIndex(COLUMN_ROLE)
+            val addrIdx = cursor.getColumnIndex(COLUMN_ADDRESS)
+            val walletIdx = cursor.getColumnIndex(COLUMN_WALLET)
+            val activeIdx = cursor.getColumnIndex(COLUMN_USER_LAST_ACTIVE)
+
+            do {
+                if (unameIdx != -1 && roleIdx != -1) {
+                    val uname = cursor.getString(unameIdx)
+                    val role = cursor.getString(roleIdx)
+                    val addr = if (addrIdx != -1 && !cursor.isNull(addrIdx)) cursor.getString(addrIdx) else "Manila"
+                    val wallet = if (walletIdx != -1 && !cursor.isNull(walletIdx)) cursor.getDouble(walletIdx) else 1000.0
+                    val lastActive = if (activeIdx != -1 && !cursor.isNull(activeIdx)) cursor.getString(activeIdx) else "Recently Active"
+
+                    list.add(UserAccountInfo(uname, role, addr, wallet, lastActive))
+                }
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return list
     }
 
     fun addMenuItem(storeName: String, itemName: String, description: String, price: Double, category: String, imageType: String): Boolean {
@@ -423,10 +422,36 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_ITEM_IMAGE, imageType)
             put(COLUMN_ITEM_RATING, 4.8)
             put(COLUMN_ITEM_PREP, 15)
+            put(COLUMN_ITEM_AVAILABLE, 1)
         }
         val result = db.insert(TABLE_MENU, null, values)
         db.close()
         return result != -1L
+    }
+
+    fun updateMenuItemDetails(itemId: Int, itemName: String, description: String, price: Double, category: String, imageType: String, isAvailable: Boolean): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_ITEM_NAME, itemName)
+            put(COLUMN_DESCRIPTION, description)
+            put(COLUMN_PRICE, price)
+            put(COLUMN_MENU_CATEGORY, category)
+            put(COLUMN_ITEM_IMAGE, imageType)
+            put(COLUMN_ITEM_AVAILABLE, if (isAvailable) 1 else 0)
+        }
+        val count = db.update(TABLE_MENU, values, "$COLUMN_ITEM_ID = ?", arrayOf(itemId.toString()))
+        db.close()
+        return count > 0
+    }
+
+    fun toggleMealAvailability(itemId: Int, isAvailable: Boolean): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_ITEM_AVAILABLE, if (isAvailable) 1 else 0)
+        }
+        val count = db.update(TABLE_MENU, values, "$COLUMN_ITEM_ID = ?", arrayOf(itemId.toString()))
+        db.close()
+        return count > 0
     }
 
     fun deleteMenuItem(itemId: Int): Boolean {
@@ -436,16 +461,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return count > 0
     }
 
-    fun searchAndSortMenuItems(
-        query: String,
-        categoryFilter: String,
-        sortBy: String
-    ): List<MenuItem> {
+    fun searchAndSortMenuItemsAdmin(query: String, categoryFilter: String, sortBy: String): List<MenuItem> {
+        return fetchMenuItemsInternal(query, categoryFilter, sortBy, onlyAvailable = false)
+    }
+
+    fun searchAndSortMenuItems(query: String, categoryFilter: String, sortBy: String): List<MenuItem> {
+        return fetchMenuItemsInternal(query, categoryFilter, sortBy, onlyAvailable = true)
+    }
+
+    private fun fetchMenuItemsInternal(query: String, categoryFilter: String, sortBy: String, onlyAvailable: Boolean): List<MenuItem> {
         val itemList = mutableListOf<MenuItem>()
         val db = this.readableDatabase
 
         var selection = "1=1"
         val args = mutableListOf<String>()
+
+        if (onlyAvailable) {
+            selection += " AND $COLUMN_ITEM_AVAILABLE = 1"
+        }
 
         if (query.isNotBlank()) {
             selection += " AND ($COLUMN_ITEM_NAME LIKE ? OR $COLUMN_DESCRIPTION LIKE ? OR $COLUMN_MENU_STORE LIKE ?)"
@@ -480,11 +513,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val imgIdx = cursor.getColumnIndex(COLUMN_ITEM_IMAGE)
             val ratingIdx = cursor.getColumnIndex(COLUMN_ITEM_RATING)
             val prepIdx = cursor.getColumnIndex(COLUMN_ITEM_PREP)
+            val availIdx = cursor.getColumnIndex(COLUMN_ITEM_AVAILABLE)
 
             do {
                 if (idIdx != -1 && storeIdx != -1 && nameIdx != -1 && descIdx != -1 && priceIdx != -1 && catIdx != -1 && imgIdx != -1) {
                     val ratingVal = if (ratingIdx != -1) cursor.getDouble(ratingIdx) else 4.8
                     val prepVal = if (prepIdx != -1) cursor.getInt(prepIdx) else 15
+                    val availVal = if (availIdx != -1) cursor.getInt(availIdx) == 1 else true
 
                     itemList.add(
                         MenuItem(
@@ -496,7 +531,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                             category = cursor.getString(catIdx),
                             imageType = cursor.getString(imgIdx),
                             rating = ratingVal,
-                            prepTimeMins = prepVal
+                            prepTimeMins = prepVal,
+                            isAvailable = availVal
                         )
                     )
                 }
@@ -514,7 +550,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         paymentType: String,
         totalPrice: Double,
         specialNote: String
-    ): Boolean {
+    ): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_CUSTOMER_NAME, customerName)
@@ -529,7 +565,55 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         val result = db.insert(TABLE_ORDERS, null, values)
         db.close()
-        return result != -1L
+        return result
+    }
+
+    fun getOrderById(orderId: Int): Order? {
+        val db = this.readableDatabase
+        var order: Order? = null
+        val cursor = db.query(
+            TABLE_ORDERS,
+            null,
+            "$COLUMN_ORDER_ID = ?",
+            arrayOf(orderId.toString()),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            val idIndex = cursor.getColumnIndex(COLUMN_ORDER_ID)
+            val nameIndex = cursor.getColumnIndex(COLUMN_CUSTOMER_NAME)
+            val storeIndex = cursor.getColumnIndex(COLUMN_ORDER_STORE)
+            val itemIndex = cursor.getColumnIndex(COLUMN_ORDER_ITEM)
+            val paymentIndex = cursor.getColumnIndex(COLUMN_PAYMENT_TYPE)
+            val priceIndex = cursor.getColumnIndex(COLUMN_TOTAL_PRICE)
+            val noteIndex = cursor.getColumnIndex(COLUMN_SPECIAL_NOTE)
+            val statusIndex = cursor.getColumnIndex(COLUMN_ORDER_STATUS)
+            val ratingIndex = cursor.getColumnIndex(COLUMN_ORDER_RATING)
+            val reviewIndex = cursor.getColumnIndex(COLUMN_ORDER_REVIEW)
+
+            if (idIndex != -1 && nameIndex != -1 && itemIndex != -1 && paymentIndex != -1 && priceIndex != -1) {
+                val storeNameStr = if (storeIndex != -1 && !cursor.isNull(storeIndex)) cursor.getString(storeIndex) else "BiteDash Express"
+                val noteStr = if (noteIndex != -1 && !cursor.isNull(noteIndex)) cursor.getString(noteIndex) else ""
+                val statusStr = if (statusIndex != -1 && !cursor.isNull(statusIndex)) cursor.getString(statusIndex) else "Preparing"
+                val ratingVal = if (ratingIndex != -1 && !cursor.isNull(ratingIndex)) cursor.getInt(ratingIndex) else 0
+                val reviewStr = if (reviewIndex != -1 && !cursor.isNull(reviewIndex)) cursor.getString(reviewIndex) else ""
+
+                order = Order(
+                    orderId = cursor.getInt(idIndex),
+                    customerName = cursor.getString(nameIndex),
+                    itemName = "$storeNameStr - ${cursor.getString(itemIndex)}",
+                    paymentType = cursor.getString(paymentIndex),
+                    totalPrice = cursor.getDouble(priceIndex),
+                    specialNote = noteStr,
+                    status = statusStr,
+                    rating = ratingVal,
+                    review = reviewStr
+                )
+            }
+        }
+        cursor.close()
+        db.close()
+        return order
     }
 
     fun updateOrderStatus(orderId: Int, newStatus: String): Boolean {
@@ -538,6 +622,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_ORDER_STATUS, newStatus)
         }
         val count = db.update(TABLE_ORDERS, values, "$COLUMN_ORDER_ID = ?", arrayOf(orderId.toString()))
+        db.close()
+        return count > 0
+    }
+
+    fun deleteOrder(orderId: Int): Boolean {
+        val db = this.writableDatabase
+        val count = db.delete(TABLE_ORDERS, "$COLUMN_ORDER_ID = ?", arrayOf(orderId.toString()))
         db.close()
         return count > 0
     }

@@ -4,30 +4,29 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import kotlin.math.max
+import kotlin.math.min
 
 class CheckoutActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: DatabaseHelper
-
     private lateinit var tvAddress: TextView
-    private lateinit var tvMealName: TextView
-    private lateinit var tvStoreName: TextView
-    private lateinit var tvBasePrice: TextView
-    private lateinit var ivFoodImg: ImageView
-
-    private lateinit var btnQtyMinus: Button
-    private lateinit var btnQtyPlus: Button
-    private lateinit var tvQtyCount: TextView
+    private lateinit var llCheckoutCartContainer: LinearLayout
 
     private lateinit var cbExtraSauce: CheckBox
     private lateinit var cbIcedTea: CheckBox
@@ -47,11 +46,6 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvGrandTotal: TextView
 
     private var currentUsername: String = "Customer"
-    private var mealName: String = "Cheeseburger Deluxe Meal"
-    private var storeName: String = "BiteDash Express Kitchen"
-    private var basePrice: Double = 149.0
-    private var imageType: String = "burger"
-    private var mealQuantity: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,24 +54,13 @@ class CheckoutActivity : AppCompatActivity() {
         dbHelper = DatabaseHelper(this)
 
         currentUsername = intent.getStringExtra("EXTRA_USERNAME") ?: "Customer"
-        mealName = intent.getStringExtra("EXTRA_MEAL_NAME") ?: "Cheeseburger Deluxe Meal"
-        storeName = intent.getStringExtra("EXTRA_STORE_NAME") ?: "BiteDash Express Kitchen"
-        basePrice = intent.getDoubleExtra("EXTRA_BASE_PRICE", 149.0)
-        imageType = intent.getStringExtra("EXTRA_IMAGE_TYPE") ?: "burger"
 
         val btnBack = findViewById<Button>(R.id.btnBackFromCheckout)
         val btnChangeAddress = findViewById<Button>(R.id.btnChangeAddress)
         val btnConfirmOrder = findViewById<Button>(R.id.btnConfirmOrder)
 
         tvAddress = findViewById(R.id.tvCheckoutAddress)
-        tvMealName = findViewById(R.id.tvCheckoutMealName)
-        tvStoreName = findViewById(R.id.tvCheckoutStoreName)
-        tvBasePrice = findViewById(R.id.tvCheckoutBasePrice)
-        ivFoodImg = findViewById(R.id.ivCheckoutFoodImg)
-
-        btnQtyMinus = findViewById(R.id.btnQtyMinus)
-        btnQtyPlus = findViewById(R.id.btnQtyPlus)
-        tvQtyCount = findViewById(R.id.tvQtyCount)
+        llCheckoutCartContainer = findViewById(R.id.llCheckoutCartContainer)
 
         cbExtraSauce = findViewById(R.id.cbExtraSauce)
         cbIcedTea = findViewById(R.id.cbIcedTea)
@@ -96,25 +79,7 @@ class CheckoutActivity : AppCompatActivity() {
         tvDiscountPrice = findViewById(R.id.tvDiscountPrice)
         tvGrandTotal = findViewById(R.id.tvCheckoutGrandTotal)
 
-        // Start floating background food animations
         startBackgroundFloatingAnimations()
-
-        // Set meal details
-        tvMealName.text = mealName
-        tvStoreName.text = storeName
-        tvBasePrice.text = "₱${String.format("%,.2f", basePrice)}"
-
-        val drawableRes = when (imageType) {
-            "chicken" -> R.drawable.ic_food_chicken
-            "coffee" -> R.drawable.ic_food_coffee
-            "snack" -> R.drawable.ic_food_snack
-            "burger" -> R.drawable.ic_food_burger
-            "pizza" -> R.drawable.ic_food_pizza
-            "drink" -> R.drawable.ic_food_drink
-            "combo" -> R.drawable.ic_food_combo
-            else -> R.drawable.ic_bitedash_logo
-        }
-        ivFoodImg.setImageResource(drawableRes)
 
         btnBack.setOnClickListener { finish() }
 
@@ -122,22 +87,6 @@ class CheckoutActivity : AppCompatActivity() {
             val intent = Intent(this, AccountActivity::class.java)
             intent.putExtra("EXTRA_USERNAME", currentUsername)
             startActivity(intent)
-        }
-
-        btnQtyMinus.setOnClickListener {
-            if (mealQuantity > 1) {
-                mealQuantity--
-                tvQtyCount.text = mealQuantity.toString()
-                calculateAndDisplayPrices()
-            }
-        }
-
-        btnQtyPlus.setOnClickListener {
-            if (mealQuantity < 20) {
-                mealQuantity++
-                tvQtyCount.text = mealQuantity.toString()
-                calculateAndDisplayPrices()
-            }
         }
 
         val updateListener = { _: Any, _: Boolean -> calculateAndDisplayPrices() }
@@ -149,6 +98,11 @@ class CheckoutActivity : AppCompatActivity() {
         rgVouchers.setOnCheckedChangeListener { _, _ -> calculateAndDisplayPrices() }
 
         btnConfirmOrder.setOnClickListener {
+            if (CartManager.items.isEmpty()) {
+                Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val grandTotal = calculateGrandTotal()
             val paymentMethod = if (rbCod.isChecked) "Cash on Delivery (COD)" else "E-Wallet / GCash / BitePay"
             val noteText = etCheckoutNote.text.toString().trim()
@@ -165,36 +119,43 @@ class CheckoutActivity : AppCompatActivity() {
                 else -> ""
             }
 
-            val qtySummary = "${mealQuantity}x $mealName"
+            val cartSummaryList = CartManager.items.map { "${it.quantity}x ${it.menuItem.itemName}" }
+            val itemsFormatted = cartSummaryList.joinToString(" + ")
+
             val itemSummary = if (addOnList.isEmpty()) {
-                qtySummary + voucherNote
+                itemsFormatted + voucherNote
             } else {
-                "$qtySummary (${addOnList.joinToString(", ")})$voucherNote"
+                "$itemsFormatted (${addOnList.joinToString(", ")})$voucherNote"
             }
+
+            val primaryStoreName = CartManager.items.firstOrNull()?.menuItem?.storeName ?: "BiteDash Kitchen"
 
             val profile = dbHelper.getUserProfile(currentUsername)
             val currentAddr = profile?.address ?: "123 University Belt, Manila"
 
-            val success = dbHelper.placeOrder(
+            val newOrderId = dbHelper.placeOrder(
                 customerName = currentUsername,
-                storeName = storeName,
+                storeName = primaryStoreName,
                 itemName = itemSummary,
                 paymentType = paymentMethod,
                 totalPrice = grandTotal,
                 specialNote = noteText
             )
 
-            if (success) {
+            if (newOrderId != -1L) {
                 Toast.makeText(this, "Order Placed Successfully!", Toast.LENGTH_LONG).show()
 
-                // Launch Receipt
+                val orderId = newOrderId.toInt()
+                CartManager.clear()
+
                 val receiptIntent = Intent(this, ReceiptActivity::class.java).apply {
-                    putExtra("EXTRA_ORDER_ID", (101..999).random())
+                    putExtra("EXTRA_ORDER_ID", orderId)
                     putExtra("EXTRA_CUSTOMER_NAME", currentUsername)
                     putExtra("EXTRA_ITEM_NAME", itemSummary)
                     putExtra("EXTRA_PAYMENT_METHOD", paymentMethod)
                     putExtra("EXTRA_TOTAL_PRICE", grandTotal)
                     putExtra("EXTRA_ADDRESS", currentAddr)
+                    putExtra("EXTRA_ORDER_STATUS", "Preparing")
                 }
                 startActivity(receiptIntent)
                 finish()
@@ -204,12 +165,126 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         loadAddress()
+        renderCheckoutCartItems()
         calculateAndDisplayPrices()
     }
 
     override fun onResume() {
         super.onResume()
         loadAddress()
+        renderCheckoutCartItems()
+        calculateAndDisplayPrices()
+    }
+
+    private fun renderCheckoutCartItems() {
+        llCheckoutCartContainer.removeAllViews()
+
+        if (CartManager.items.isEmpty()) {
+            val emptyTv = TextView(this).apply {
+                text = "Your cart is empty. Please add meals from the dashboard!"
+                textSize = 14f
+                setTextColor(ContextCompat.getColor(context, R.color.text_muted))
+                setPadding(0, 12, 0, 12)
+            }
+            llCheckoutCartContainer.addView(emptyTv)
+            return
+        }
+
+        for (cartItem in CartManager.items) {
+            val itemRow = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, 8, 0, 8)
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+
+            val imgView = ImageView(this).apply {
+                val drawableRes = when (cartItem.menuItem.imageType) {
+                    "fastfood", "burger", "chicken", "combo" -> R.drawable.ic_food_fast_food
+                    "ricemeal", "pizza" -> R.drawable.ic_food_rice_meals
+                    "beverage", "coffee", "drink" -> R.drawable.ic_food_beverage
+                    "snack" -> R.drawable.ic_food_snack
+                    else -> R.drawable.ic_bitedash_logo
+                }
+                setImageResource(drawableRes)
+                layoutParams = LinearLayout.LayoutParams(48.dpToPx(), 48.dpToPx()).apply {
+                    setMargins(0, 0, 12, 0)
+                }
+            }
+
+            val detailsBox = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+            }
+
+            val tvTitle = TextView(this).apply {
+                text = cartItem.menuItem.itemName
+                textSize = 15f
+                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                setTypeface(null, Typeface.BOLD)
+            }
+
+            val tvPrice = TextView(this).apply {
+                text = "₱${String.format("%,.2f", cartItem.menuItem.price)} each"
+                textSize = 12f
+                setTextColor(ContextCompat.getColor(context, R.color.text_muted))
+            }
+
+            detailsBox.addView(tvTitle)
+            detailsBox.addView(tvPrice)
+
+            // Quantity Controls
+            val qtyRow = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+
+            val btnMinus = Button(this).apply {
+                text = "−"
+                textSize = 14f
+                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                background = ContextCompat.getDrawable(context, R.drawable.bg_qty_button_minus)
+                layoutParams = LinearLayout.LayoutParams(36.dpToPx(), 36.dpToPx())
+                setOnClickListener {
+                    CartManager.removeItem(cartItem.menuItem)
+                    renderCheckoutCartItems()
+                    calculateAndDisplayPrices()
+                }
+            }
+
+            val tvQty = TextView(this).apply {
+                text = "  ${cartItem.quantity}  "
+                textSize = 15f
+                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                setTypeface(null, Typeface.BOLD)
+            }
+
+            val btnPlus = Button(this).apply {
+                text = "+"
+                textSize = 14f
+                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                background = ContextCompat.getDrawable(context, R.drawable.bg_yellow_button)
+                layoutParams = LinearLayout.LayoutParams(36.dpToPx(), 36.dpToPx())
+                setOnClickListener {
+                    CartManager.addItem(cartItem.menuItem)
+                    renderCheckoutCartItems()
+                    calculateAndDisplayPrices()
+                }
+            }
+
+            qtyRow.addView(btnMinus)
+            qtyRow.addView(tvQty)
+            qtyRow.addView(btnPlus)
+
+            itemRow.addView(imgView)
+            itemRow.addView(detailsBox)
+            itemRow.addView(qtyRow)
+
+            llCheckoutCartContainer.addView(itemRow)
+        }
     }
 
     private fun loadAddress() {
@@ -218,50 +293,61 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun calculateGrandTotal(): Double {
-        var subtotal = basePrice * mealQuantity
-        if (cbExtraSauce.isChecked) subtotal += (25.0 * mealQuantity)
-        if (cbIcedTea.isChecked) subtotal += (40.0 * mealQuantity)
-        if (cbExpressDelivery.isChecked) subtotal += 50.0
+        val totalQty = CartManager.getItemCount()
+        val itemsSubtotal = CartManager.getTotalPrice()
 
-        var deliveryFee = 29.0
+        var addOnsTotal = 0.0
+        if (cbExtraSauce.isChecked) addOnsTotal += (25.0 * totalQty)
+        if (cbIcedTea.isChecked) addOnsTotal += (40.0 * totalQty)
+        if (cbExpressDelivery.isChecked) addOnsTotal += 50.0
+
+        val baseDeliveryFee = if (CartManager.items.isEmpty()) 0.0 else 29.0
+        val preDiscountTotal = itemsSubtotal + addOnsTotal + baseDeliveryFee
+
         var discount = 0.0
-
         when {
-            rbVoucher50.isChecked -> discount = 50.0
-            rbVoucherFreeDel.isChecked -> {
-                deliveryFee = 0.0
-                discount = 29.0
+            rbVoucher50.isChecked && CartManager.items.isNotEmpty() -> {
+                discount = min(50.0, preDiscountTotal)
+            }
+            rbVoucherFreeDel.isChecked && CartManager.items.isNotEmpty() -> {
+                discount = baseDeliveryFee
             }
         }
 
-        val grandTotal = subtotal + deliveryFee - discount
-        return if (grandTotal < 0) 0.0 else grandTotal
+        return max(0.0, preDiscountTotal - discount)
     }
 
     private fun calculateAndDisplayPrices() {
-        var subtotal = basePrice * mealQuantity
-        if (cbExtraSauce.isChecked) subtotal += (25.0 * mealQuantity)
-        if (cbIcedTea.isChecked) subtotal += (40.0 * mealQuantity)
-        if (cbExpressDelivery.isChecked) subtotal += 50.0
+        val totalQty = CartManager.getItemCount()
+        val itemsSubtotal = CartManager.getTotalPrice()
 
-        var deliveryFee = 29.0
+        var addOnsTotal = 0.0
+        if (cbExtraSauce.isChecked) addOnsTotal += (25.0 * totalQty)
+        if (cbIcedTea.isChecked) addOnsTotal += (40.0 * totalQty)
+        if (cbExpressDelivery.isChecked) addOnsTotal += 50.0
+
+        val baseDeliveryFee = if (CartManager.items.isEmpty()) 0.0 else 29.0
+        val preDiscountTotal = itemsSubtotal + addOnsTotal + baseDeliveryFee
+
         var discount = 0.0
-
         when {
-            rbVoucher50.isChecked -> discount = 50.0
-            rbVoucherFreeDel.isChecked -> {
-                deliveryFee = 0.0
-                discount = 29.0
+            rbVoucher50.isChecked && CartManager.items.isNotEmpty() -> {
+                discount = min(50.0, preDiscountTotal)
+            }
+            rbVoucherFreeDel.isChecked && CartManager.items.isNotEmpty() -> {
+                discount = baseDeliveryFee
             }
         }
 
-        val grandTotal = subtotal + deliveryFee - discount
-        val finalGrandTotal = if (grandTotal < 0) 0.0 else grandTotal
+        val grandTotal = max(0.0, preDiscountTotal - discount)
 
-        tvSubtotalPrice.text = "₱${String.format("%,.2f", subtotal)}"
-        tvDeliveryFeePrice.text = "₱${String.format("%,.2f", deliveryFee)}"
+        val tvAddOnsPrice = findViewById<TextView>(R.id.tvAddOnsPrice)
+
+        tvSubtotalPrice.text = "₱${String.format("%,.2f", itemsSubtotal)}"
+        tvAddOnsPrice?.text = "₱${String.format("%,.2f", addOnsTotal)}"
+        tvDeliveryFeePrice.text = "₱${String.format("%,.2f", baseDeliveryFee)}"
         tvDiscountPrice.text = "-₱${String.format("%,.2f", discount)}"
-        tvGrandTotal.text = "₱${String.format("%,.2f", finalGrandTotal)}"
+        tvGrandTotal.text = "₱${String.format("%,.2f", grandTotal)}"
     }
 
     private fun startBackgroundFloatingAnimations() {
@@ -292,5 +378,9 @@ class CheckoutActivity : AppCompatActivity() {
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(translateY, rotation)
         animatorSet.start()
+    }
+
+    private fun Int.dpToPx(): Int {
+        return (this * resources.displayMetrics.density).toInt()
     }
 }

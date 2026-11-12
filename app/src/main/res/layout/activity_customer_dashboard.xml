@@ -17,8 +17,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="50dp"
             android:alpha="0.2"
-            android:contentDescription="@string/cat_burgers"
-            android:src="@drawable/ic_food_burger" />
+            android:contentDescription="@string/cat_fast_foods"
+            android:src="@drawable/ic_food_fast_food" />
 
         <ImageView
             android:id="@+id/ivFloatFood2"
@@ -28,8 +28,8 @@
             android:layout_marginTop="120dp"
             android:layout_marginEnd="28dp"
             android:alpha="0.2"
-            android:contentDescription="@string/cat_pizza"
-            android:src="@drawable/ic_food_pizza" />
+            android:contentDescription="@string/cat_rice_meals"
+            android:src="@drawable/ic_food_rice_meals" />
 
         <ImageView
             android:id="@+id/ivFloatFood3"
@@ -39,8 +39,8 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="140dp"
             android:alpha="0.2"
-            android:contentDescription="@string/cat_milk_tea"
-            android:src="@drawable/ic_food_drink" />
+            android:contentDescription="@string/cat_beverage"
+            android:src="@drawable/ic_food_beverage" />
 
         <ImageView
             android:id="@+id/ivFloatFood4"
@@ -65,7 +65,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="90dp">
 
             <!-- Header Bar -->
             <LinearLayout
@@ -211,7 +213,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_badge_yellow"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:checked="true"
                         android:paddingHorizontal="18dp"
@@ -225,34 +227,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
                         android:text="@string/cat_chicken"
                         android:textColor="@color/text_dark"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:visibility="gone" />
 
                     <RadioButton
                         android:id="@+id/rbCatCoffee"
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
                         android:text="@string/cat_coffee"
                         android:textColor="@color/text_dark"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:visibility="gone" />
 
                     <RadioButton
                         android:id="@+id/rbCatDrinks"
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
-                        android:text="@string/cat_milk_tea"
+                        android:text="@string/cat_beverage"
                         android:textColor="@color/text_dark"
                         android:textSize="13sp" />
 
@@ -261,7 +265,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
                         android:text="@string/cat_snacks"
@@ -273,10 +277,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
-                        android:text="@string/cat_rice"
+                        android:text="@string/cat_rice_meals"
                         android:textColor="@color/text_dark"
                         android:textSize="13sp" />
 
@@ -285,10 +289,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
-                        android:text="@string/cat_burgers"
+                        android:text="@string/cat_fast_foods"
                         android:textColor="@color/text_dark"
                         android:textSize="13sp" />
 
@@ -296,12 +300,13 @@
                         android:id="@+id/rbCatPizza"
                         android:layout_width="wrap_content"
                         android:layout_height="38dp"
-                        android:background="@drawable/bg_card"
+                        android:background="@drawable/bg_category_chip"
                         android:button="@null"
                         android:paddingHorizontal="18dp"
-                        android:text="@string/cat_pizza"
+                        android:text="@string/cat_rice_meals"
                         android:textColor="@color/text_dark"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        android:visibility="gone" />
                 </RadioGroup>
             </HorizontalScrollView>
 
@@ -393,4 +398,56 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <!-- Floating Bottom Cart Bar -->
+    <LinearLayout
+        android:id="@+id/cardCartBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_header_gradient"
+        android:elevation="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="14dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCartCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🛒 1 Item in Cart"
+                android:textColor="@color/text_dark"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCartTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Total: ₱0.00"
+                android:textColor="@color/text_dark"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnViewCartCheckout"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_badge_yellow"
+            android:paddingHorizontal="16dp"
+            android:text="CHECKOUT →"
+            android:textColor="@color/text_dark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </FrameLayout>

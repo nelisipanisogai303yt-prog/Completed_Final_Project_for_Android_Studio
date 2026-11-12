@@ -34,11 +34,13 @@
 
     <!-- Categories -->
     <string name="cat_all">All</string>
+    <string name="cat_fast_foods">Fast Foods</string>
+    <string name="cat_rice_meals">Rice Meals</string>
+    <string name="cat_beverage">Beverage</string>
+    <string name="cat_snacks">Snacks</string>
     <string name="cat_chicken">Chicken</string>
     <string name="cat_coffee">Coffee</string>
     <string name="cat_milk_tea">Milk Tea</string>
-    <string name="cat_snacks">Snacks</string>
-    <string name="cat_rice">Rice Meals</string>
     <string name="cat_burgers">Burgers</string>
     <string name="cat_pizza">Pizza</string>
     <string name="cat_combos">Combos</string>

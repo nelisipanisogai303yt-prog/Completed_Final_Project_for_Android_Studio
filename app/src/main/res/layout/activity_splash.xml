@@ -4,6 +4,15 @@
     android:layout_height="match_parent"
     android:background="@color/bg_gray">
 
+    <!-- Background Sizzling Image -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_food_background_sizzling"
+        android:contentDescription="@null" />
+
     <!-- Moving Floating Food Icons Background Layer -->
     <FrameLayout
         android:layout_width="match_parent"
@@ -11,44 +20,44 @@
 
         <ImageView
             android:id="@+id/ivFloatFood1"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:layout_gravity="top|start"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginStart="-25dp"
+            android:layout_marginTop="30dp"
             android:alpha="0.25"
-            android:contentDescription="@string/cat_burgers"
-            android:src="@drawable/ic_food_burger" />
+            android:contentDescription="@string/cat_fast_foods"
+            android:src="@drawable/ic_food_fast_food" />
 
         <ImageView
             android:id="@+id/ivFloatFood2"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="top|end"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="36dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="-25dp"
             android:alpha="0.25"
-            android:contentDescription="@string/cat_pizza"
-            android:src="@drawable/ic_food_pizza" />
+            android:contentDescription="@string/cat_rice_meals"
+            android:src="@drawable/ic_food_rice_meals" />
 
         <ImageView
             android:id="@+id/ivFloatFood3"
-            android:layout_width="68dp"
-            android:layout_height="68dp"
+            android:layout_width="155dp"
+            android:layout_height="155dp"
             android:layout_gravity="bottom|start"
-            android:layout_marginStart="40dp"
-            android:layout_marginBottom="120dp"
+            android:layout_marginStart="-25dp"
+            android:layout_marginBottom="90dp"
             android:alpha="0.25"
-            android:contentDescription="@string/cat_milk_tea"
-            android:src="@drawable/ic_food_drink" />
+            android:contentDescription="@string/cat_beverage"
+            android:src="@drawable/ic_food_beverage" />
 
         <ImageView
             android:id="@+id/ivFloatFood4"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginEnd="-25dp"
+            android:layout_marginBottom="50dp"
             android:alpha="0.25"
             android:contentDescription="@string/cat_snacks"
             android:src="@drawable/ic_food_snack" />
@@ -66,8 +75,8 @@
 
         <ImageView
             android:id="@+id/ivSplashLogo"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="409dp"
+            android:layout_height="424dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_bitedash_logo" />
 

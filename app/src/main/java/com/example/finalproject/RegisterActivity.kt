@@ -27,8 +27,13 @@ class RegisterActivity : AppCompatActivity() {
         val rbStoreOwner = findViewById<RadioButton>(R.id.rbStoreOwner)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         val tvLoginLink = findViewById<TextView>(R.id.tvLoginLink)
+        val btnBackRegister = findViewById<Button>(R.id.btnBackRegister)
 
         startBackgroundFloatingAnimations()
+
+        btnBackRegister?.setOnClickListener {
+            finish()
+        }
 
         btnRegister.setOnClickListener {
             val username = etRegUsername.text.toString().trim()

@@ -8,6 +8,8 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -51,6 +53,20 @@ class CustomerDashboardActivity : AppCompatActivity() {
         rgSortBy = findViewById(R.id.rgSortBy)
         llFoodItemsContainer = findViewById(R.id.llFoodItemsContainer)
         llActiveOrdersContainer = findViewById(R.id.llActiveOrdersContainer)
+
+        val cardCartBar = findViewById<LinearLayout>(R.id.cardCartBar)
+        val btnViewCartCheckout = findViewById<Button>(R.id.btnViewCartCheckout)
+
+        btnViewCartCheckout?.setOnClickListener {
+            if (CartManager.getItemCount() > 0) {
+                val checkoutIntent = Intent(this@CustomerDashboardActivity, CheckoutActivity::class.java).apply {
+                    putExtra("EXTRA_USERNAME", currentCustomerName)
+                }
+                startActivity(checkoutIntent)
+            } else {
+                Toast.makeText(this, "Your cart is empty!", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         startBackgroundFloatingAnimations()
 
@@ -106,6 +122,7 @@ class CustomerDashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        filterAndRenderMeals()
         loadActiveCustomerOrders()
     }
 
@@ -202,6 +219,7 @@ class CustomerDashboardActivity : AppCompatActivity() {
                         putExtra("EXTRA_PAYMENT_METHOD", order.paymentType)
                         putExtra("EXTRA_TOTAL_PRICE", order.totalPrice)
                         putExtra("EXTRA_ADDRESS", currentAddr)
+                        putExtra("EXTRA_ORDER_STATUS", order.status)
                     }
                     startActivity(intent)
                 }
@@ -280,13 +298,10 @@ class CustomerDashboardActivity : AppCompatActivity() {
             // Food Picture Icon
             val imgView = ImageView(this).apply {
                 val drawableRes = when (meal.imageType) {
-                    "chicken" -> R.drawable.ic_food_chicken
-                    "coffee" -> R.drawable.ic_food_coffee
+                    "fastfood", "burger", "chicken", "combo" -> R.drawable.ic_food_fast_food
+                    "ricemeal", "pizza" -> R.drawable.ic_food_rice_meals
+                    "beverage", "coffee", "drink" -> R.drawable.ic_food_beverage
                     "snack" -> R.drawable.ic_food_snack
-                    "burger" -> R.drawable.ic_food_burger
-                    "pizza" -> R.drawable.ic_food_pizza
-                    "drink" -> R.drawable.ic_food_drink
-                    "combo" -> R.drawable.ic_food_combo
                     else -> R.drawable.ic_bitedash_logo
                 }
                 setImageResource(drawableRes)
@@ -323,45 +338,105 @@ class CustomerDashboardActivity : AppCompatActivity() {
             }
 
             val tvPrice = TextView(this).apply {
-                text = "₱${String.format("%.2f", meal.price)}"
+                text = "₱${String.format("%,.2f", meal.price)}"
                 textSize = 15f
                 setTextColor(ContextCompat.getColor(context, R.color.text_dark))
                 setTypeface(null, Typeface.BOLD)
             }
 
-            val btnOrder = Button(this).apply {
-                text = "ORDER NOW →"
-                textSize = 12f
-                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
-                background = ContextCompat.getDrawable(context, R.drawable.bg_yellow_button)
-                layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    40.dpToPx()
-                ).apply {
-                    setMargins(0, 8, 0, 0)
-                }
-                setOnClickListener {
-                    val checkoutIntent = Intent(this@CustomerDashboardActivity, CheckoutActivity::class.java).apply {
-                        putExtra("EXTRA_USERNAME", currentCustomerName)
-                        putExtra("EXTRA_MEAL_NAME", meal.itemName)
-                        putExtra("EXTRA_STORE_NAME", meal.storeName)
-                        putExtra("EXTRA_BASE_PRICE", meal.price)
-                        putExtra("EXTRA_IMAGE_TYPE", meal.imageType)
-                    }
-                    startActivity(checkoutIntent)
-                }
-            }
+            val currentQty = CartManager.getQuantityOf(meal)
 
             infoLayout.addView(tvTitle)
             infoLayout.addView(tvStore)
             infoLayout.addView(tvDesc)
             infoLayout.addView(tvPrice)
-            infoLayout.addView(btnOrder)
+
+            if (currentQty == 0) {
+                val btnAdd = Button(this).apply {
+                    text = "+ ADD TO CART"
+                    textSize = 12f
+                    setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_yellow_button)
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        40.dpToPx()
+                    ).apply {
+                        setMargins(0, 8, 0, 0)
+                    }
+                    setOnClickListener {
+                        CartManager.addItem(meal)
+                        Toast.makeText(context, "${meal.itemName} added to cart!", Toast.LENGTH_SHORT).show()
+                        filterAndRenderMeals()
+                    }
+                }
+                infoLayout.addView(btnAdd)
+            } else {
+                val qtyRow = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(0, 8, 0, 0)
+                }
+
+                val btnMinus = Button(this).apply {
+                    text = "-"
+                    textSize = 14f
+                    setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_qty_button_minus)
+                    layoutParams = LinearLayout.LayoutParams(36.dpToPx(), 36.dpToPx())
+                    setOnClickListener {
+                        CartManager.removeItem(meal)
+                        filterAndRenderMeals()
+                    }
+                }
+
+                val tvQty = TextView(this).apply {
+                    text = "  $currentQty in Cart  "
+                    textSize = 13f
+                    setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                    setTypeface(null, Typeface.BOLD)
+                }
+
+                val btnPlus = Button(this).apply {
+                    text = "+"
+                    textSize = 14f
+                    setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                    background = ContextCompat.getDrawable(context, R.drawable.bg_qty_button)
+                    layoutParams = LinearLayout.LayoutParams(36.dpToPx(), 36.dpToPx())
+                    setOnClickListener {
+                        CartManager.addItem(meal)
+                        filterAndRenderMeals()
+                    }
+                }
+
+                qtyRow.addView(btnMinus)
+                qtyRow.addView(tvQty)
+                qtyRow.addView(btnPlus)
+
+                infoLayout.addView(qtyRow)
+            }
 
             cardLayout.addView(imgView)
             cardLayout.addView(infoLayout)
 
             llFoodItemsContainer.addView(cardLayout)
+        }
+
+        updateFloatingCartBar()
+    }
+
+    private fun updateFloatingCartBar() {
+        val cardCartBar = findViewById<LinearLayout>(R.id.cardCartBar)
+        val tvCartCount = findViewById<TextView>(R.id.tvCartCount)
+        val tvCartTotal = findViewById<TextView>(R.id.tvCartTotal)
+
+        val totalCount = CartManager.getItemCount()
+        if (totalCount > 0) {
+            cardCartBar?.visibility = View.VISIBLE
+            val countText = if (totalCount == 1) "🛒 1 Item in Cart" else "🛒 $totalCount Items in Cart"
+            tvCartCount?.text = countText
+            tvCartTotal?.text = "Total: ₱${String.format("%,.2f", CartManager.getTotalPrice())}"
+        } else {
+            cardCartBar?.visibility = android.view.View.GONE
         }
     }
 

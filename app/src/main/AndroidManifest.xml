@@ -52,6 +52,21 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".MealTrackingOwnerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".AccountTrackingOwnerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".OrderTrackingOwnerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".AccountActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

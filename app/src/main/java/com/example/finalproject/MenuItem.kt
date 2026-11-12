@@ -9,5 +9,6 @@ data class MenuItem(
     val category: String,
     val imageType: String,
     val rating: Double = 4.8,
-    val prepTimeMins: Int = 15
+    val prepTimeMins: Int = 15,
+    val isAvailable: Boolean = true
 )
